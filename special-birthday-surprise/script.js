@@ -37,6 +37,49 @@ const photoCaption = document.getElementById("photoCaption");
 const whistleSound = document.getElementById("whistleSound");
 const explosionSound = document.getElementById("explosionSound");
 const birthdayMusic = document.getElementById("birthdayMusic");
+/* ==================================
+VIDEO PLAY - BACKGROUND MUSIC CONTROL
+================================== */
+
+const memoryVideos = document.querySelectorAll("#videos video");
+const activeVideos = new Set();
+let resumeBirthdayMusic = false;
+
+memoryVideos.forEach(video => {
+video.addEventListener("play", () => {
+if (activeVideos.size === 0) {
+resumeBirthdayMusic =
+birthdayMusic &&
+!birthdayMusic.paused &&
+!birthdayMusic.ended;
+
+  if (birthdayMusic) {
+    birthdayMusic.pause();
+  }
+}
+
+activeVideos.add(video);
+
+});
+
+function handleVideoStop() {
+activeVideos.delete(video);
+
+if (activeVideos.size === 0 && resumeBirthdayMusic) {
+  resumeBirthdayMusic = false;
+
+  if (birthdayMusic) {
+    birthdayMusic.play().catch(() => {
+      console.info("Music resume requires user interaction.");
+    });
+  }
+}
+
+}
+
+video.addEventListener("pause", handleVideoStop);
+video.addEventListener("ended", handleVideoStop);
+});
 
 
 /* ==================================
